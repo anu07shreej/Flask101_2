@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="p-4 shadow-4 rounded-3" style="background-color: hsl(0, 0%, 94%);">
+    <h1>Add an owner</h1>
+    <p> Add a new owner with the form below:</p>
+    <form method="POST">
+        {{form.hidden_tag()}}
+        {{form.owner_name.label}}{{form.owner_name()}}<br><br>
+        {{form.pup_id.label}}{{form.pup_id()}}<br><br>
+        {{form.submit_owner()}}
+    </form>
+
+</div>
+
+{% endblock %}

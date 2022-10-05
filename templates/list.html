@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="p-4 shadow-4 rounded-3" style="background-color: hsl(0, 0%, 94%);">
+    <h1>Here is a list of all available puppies</h1>
+    <ul> 
+        {% for pup in puppies %}
+        <li> {{ pup }}</li>
+
+        {% endfor %}
+
+
+    </ul>
+</div>
+
+{% endblock %}

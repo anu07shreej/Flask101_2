@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="p-4 shadow-4 rounded-3" style="background-color: hsl(0, 0%, 94%);">
+    <h1>Have a puppy that needs to be adopted?</h1>
+    <p> Add a new puppy to our database below:</p>
+    <form method="POST">
+        {{form.hidden_tag()}}
+        {{form.name.label}}{{form.name()}}
+        {{form.submit()}}
+    </form>
+
+</div>
+
+{% endblock %}

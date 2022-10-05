@@ -1,6 +1,6 @@
 #adoption_site.py
 import os
-from forms import AddForm, DelForm
+from forms import AddForm, DelForm, AddOwnerForm
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -26,12 +26,30 @@ class Puppy(db.Model):
     __tablename__ = 'puppies'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text)
+    owner_name = db.relationship('Owner', backref='puppy', uselist=False)
+
 
     def __init__(self,name):
         self.name = name
 
     def __repr__(self,):
-        return f"Puppy name: {self.name}"
+        if self.owner_name:
+            return f"Puppy name: {self.name} and  {self.owner_name}"
+        else:
+            return f"Puppy name: {self.name}"
+
+class Owner(db.Model):
+    __tablename__ = 'owner'
+    id = db.Column(db.Integer, primary_key=True)
+    owner_name = db.Column(db.Text)
+    puppy_id = db.Column(db.Integer, db.ForeignKey('puppies.id'))
+
+    def __init__(self,owner_name,puppy_id):
+        self.owner_name = owner_name
+        self.puppy_id = puppy_id
+
+    def __repr__(self,):
+        return f"Owner is: {self.owner_name} for puppy id: {self.puppy_id}"
 
 ###############################################
 ######### VIEW ################################
@@ -39,7 +57,7 @@ class Puppy(db.Model):
 
 @app.route('/')
 def index():
-    return render_template('home.html')
+    return render_template('index.html')
 
 @app.route('/add', methods=['POST','GET'])
 def add_pup():
@@ -54,6 +72,23 @@ def add_pup():
         return redirect(url_for('list_pup'))
     
     return render_template('add.html', form = form)
+
+
+@app.route('/addowner', methods=['POST','GET'])
+def add_owner():
+    form = AddOwnerForm()
+
+    if form.validate_on_submit():
+        owner_name = form.owner_name.data
+        pup_id = form.pup_id.data
+
+        new_owner = Owner(owner_name, pup_id)
+        db.session.add(new_owner)
+        db.session.commit()
+
+        return redirect(url_for('list_pup'))
+    
+    return render_template('add_owner.html', form = form)
 
 @app.route('/list')
 def list_pup():
